@@ -1,8 +1,22 @@
+import { db } from '../db';
+import { driversTable } from '../db/schema';
+import { eq } from 'drizzle-orm';
 import { type GetByIdInput, type Driver } from '../schema';
 
 export const getDriverById = async (input: GetByIdInput): Promise<Driver | null> => {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is fetching a specific driver by ID from the database.
-    // Returns null if driver is not found.
-    return null;
+  try {
+    const results = await db.select()
+      .from(driversTable)
+      .where(eq(driversTable.id, input.id))
+      .execute();
+
+    if (results.length === 0) {
+      return null;
+    }
+
+    return results[0];
+  } catch (error) {
+    console.error('Get driver by ID failed:', error);
+    throw error;
+  }
 };
